@@ -28,8 +28,22 @@ set guioptions-=l
 set guioptions-=L
 
 " Colorscheme
-set background=dark
-colorscheme peaksea
+set t_Co=256
+try
+    colorscheme cherryblossom
+catch
+    try
+        colorscheme desert
+    catch
+    endtry
+endtry
+
+" Set line number
+set nu
+try
+    set rnu
+catch
+endtry
 
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -170,3 +184,8 @@ endfunc
 func! CurrentFileDir(cmd)
     return a:cmd . " " . expand("%:p:h") . "/"
 endfunc
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" => Etc.
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:syntastic_mode_map = { 'mode': 'passive' }
