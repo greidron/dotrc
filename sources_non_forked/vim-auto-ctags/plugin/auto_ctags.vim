@@ -20,7 +20,7 @@ endif
 
 function! s:UpdateCtags()
     " Update ctags.
-    if b:ctag_root != '/'
+    if b:ctag_root != '/' && filereadable(b:ctag_root . '/CMakeLists.txt')
         " Generate ctags file
         if filereadable(b:ctag_file)
             call system('ctags -a -o ' . b:ctag_file . ' -R ' . expand('%:p'))
