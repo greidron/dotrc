@@ -1,0 +1,27 @@
+{
+	"segments": {
+		"right": [
+			{
+				"function": "powerline_gitstatus.gitstatus",
+                "priority": 50,
+                "args": {
+                    "use_dash_c": false
+                }
+			},
+			{
+				"function": "powerline.segments.common.sys.system_load"
+			},
+			{
+				"function": "powerline.segments.common.time.date"
+			},
+			{
+				"function": "powerline.segments.common.time.date",
+				"name": "time",
+				"args": {
+					"format": "%H:%M",
+					"istime": true
+				}
+			}
+		]
+	}
+}
