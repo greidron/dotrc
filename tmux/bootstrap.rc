@@ -2,6 +2,7 @@
 ### bash bootstrap commands for tmux.
 ###
 
+__TMUX_SAVED_PWD=$PWD
 # source original bash rc.
 if [ -f ~/.bash_profile ]; then
     source ~/.bash_profile
@@ -19,3 +20,8 @@ __tmux_set_pane_pwd() {
     tmux setenv -g TMUXPWD_$lPaneNumber "$PWD"
 }
 PS1="$PS1"'$(__tmux_set_pane_pwd)'
+
+# restore pwd.
+if [ "x$PWD" != "x$__TMUX_SAVED_PWD" ]; then
+    cd $__TMUX_SAVED_PWD
+fi
