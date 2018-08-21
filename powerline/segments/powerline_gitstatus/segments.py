@@ -88,7 +88,7 @@ class GitStatusSegment(Segment):
 		behind += 1
 	return (behind, ahead)
 
-    def build_segments(self, branch, detached, tag, behind, ahead, staged, unmerged, changed, untracked, stashed):
+    def build_segments(self, commit_hash, branch, detached, tag, behind, ahead, staged, unmerged, changed, untracked, stashed):
         if detached:
             branch_group = 'gitstatus_branch_detached'
         elif staged or unmerged or changed or untracked:
@@ -96,10 +96,18 @@ class GitStatusSegment(Segment):
         else:
             branch_group = 'gitstatus_branch_clean'
 
-        segments = [
-            {'contents': u'\ue0a0 %s' % branch, 'highlight_groups': [branch_group, 'gitstatus_branch', 'gitstatus'], 'divider_highlight_group': 'gitstatus:divider'}
-        ]
+        segments = list()
 
+        branch_info = None
+        if branch == 'HEAD' and commit_hash:
+            branch_info = u'\ue0a0 (%s)' % commit_hash
+        elif commit_hash:
+            branch_info = u'\ue0a0 %s (%s)' % (branch, commit_hash)
+        else:
+            branch_info = u'\ue0a0 %s' % branch
+
+        if branch_info:
+            segments.append({'contents': branch_info, 'highlight_groups': [branch_group, 'gitstatus_branch', 'gitstatus'], 'divider_highlight_group': 'gitstatus:divider'})
         if tag:
             segments.append({'contents': u' \u2605 %s' % tag, 'highlight_groups': ['gitstatus_tag', 'gitstatus'], 'divider_highlight_group': 'gitstatus:divider'})
         if behind:
@@ -154,8 +162,12 @@ class GitStatusSegment(Segment):
                 behind, ahead = self.parse_rev_list(rev_list)
 	else:
             branch, detached, behind, ahead = self.parse_branch(status.pop(0))
-            if not branch or branch == 'HEAD':
-                branch = self.execute(pl, base + ['rev-parse', '--short', 'HEAD'])[0][0]
+            if not branch:
+                branch = 'HEAD'
+
+        commit_hash = self.execute(pl, base + ['rev-parse', 'HEAD'])[0][0]
+        if commit_hash:
+            commit_hash = commit_hash[0:7]
 
         staged, unmerged, changed, untracked = self.parse_status(status)
 
@@ -171,7 +183,7 @@ class GitStatusSegment(Segment):
         else:
             tag = ''
 
-        return self.build_segments(branch, detached, tag, behind, ahead, staged, unmerged, changed, untracked, stashed)
+        return self.build_segments(commit_hash, branch, detached, tag, behind, ahead, staged, unmerged, changed, untracked, stashed)
 
 
 gitstatus = with_docstring(GitStatusSegment(),
