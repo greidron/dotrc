@@ -6,7 +6,24 @@ TEMP_DIR="${DOTRC_ROOT}/temp_dirs/tarballs"
 
 # prefix.
 PREFIX="${HOME}/.local"
-export PATH="${HOME}/.local/bin:${PATH}"
+PREFIX_BIN="${HOME}/.local/bin"
+export PATH="${PREFIX_BIN}:${PATH}"
+
+# add path to bash profile.
+PROFILE_PATH=
+if [ -f ~/.bashrc ]; then
+    PROFILE_PATH=~/.bashrc
+elif [ -f ~/.bash_profile ]; then
+    PROFILE_PATH=~/.bash_profile
+elif [ -f ~/.profile ]; then
+    PROFILE_PATH~/.profile
+fi
+if [ ! -z "${PROFILE_PATH}" ]; then
+    grep ".*PATH=\".*${PREFIX_BIN}.*\"" ${PROFILE_PATH} >/dev/null
+    if [ $? -ne 0 ]; then
+        echo "export PATH=\"${PREFIX_BIN}:\${PATH}\"" >> ${PROFILE_PATH}
+    fi
+fi
 
 # create temp directory.
 rm -rf "${TEMP_DIR}"
