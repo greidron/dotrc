@@ -17,6 +17,11 @@ elif [ -f ~/.profile ]; then
     source ~/.profile
 fi
 
+# add local directory.
+if [ -d ~/.local/bin ]; then
+    PATH="~/.local/bin:${PATH}"
+fi
+
 # set PS to sync working directory to tmux.
 __tmux_set_pane_pwd() {
     local lPaneNumber
