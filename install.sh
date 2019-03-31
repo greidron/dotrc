@@ -3,6 +3,9 @@ set -e
 
 DOTRC_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
 
+pushd ${DOTRC_ROOT}
+export PATH="${HOME}/.local/bin:${PATH}"
+
 case $1 in
     tools)
         $DOTRC_ROOT/install_tools.sh
@@ -19,3 +22,4 @@ case $1 in
         $DOTRC_ROOT/install_tmux.sh
         ;;
 esac
+popd
